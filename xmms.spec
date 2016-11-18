@@ -1,6 +1,6 @@
 Name:           xmms
 Version:        1.2.11
-Release:        26.20071117cvs%{?dist}
+Release:        27.20071117cvs%{?dist}
 Epoch:          1
 Summary:        The X MultiMedia System, a media player
 
@@ -14,17 +14,18 @@ URL:            http://legacy.xmms2.org/
 Source0:        %{name}-%{version}-20071117cvs.patched.tar.bz2
 Source1:        xmms.sh
 Source2:        xmms.xpm
-Source3:        rh_mp3.c
+# MP3 decode support is now natively supported in Fedora (again).
+# If the CVS code for xmms still existed, we'd just make a new source0
+# But it doesn't. So I copied the Input/mpg123 files from xmms-1.2.11.
+Source3:	xmms-1.2.11-mpg123.tar.bz2
 Source4:        xmms.desktop
 # http://cvs.xmms.org/cvsweb.cgi/xmms/General/joystick/joy.c.diff?r1=1.8&r2=1.9
 Patch1:         %{name}-1.2.6-audio.patch
 Patch2:         %{name}-1.2.6-lazy.patch
 Patch3:         %{name}-1.2.8-default-skin.patch
-Patch4:         %{name}-1.2.11-nomp3.patch
 Patch5:         %{name}-1.2.11-arts.patch
 Patch6:         %{name}-1.2.11-alsalib.patch
 Patch7:         %{name}-cd-mountpoint.patch
-# Patch8 on top of patch4
 Patch8:         %{name}-1.2.11-multilib.patch
 Patch9:		%{name}-play.patch
 Patch11:        %{name}-1.2.10-gcc4.patch
@@ -70,6 +71,10 @@ streaming content and has a configurable interface.
 %package        libs
 Summary:        XMMS engine and core plugins
 Group:          System Environment/Libraries
+# mp3 is back
+Provides:       xmms-mp3 = %{version}-%{release}
+Obsoletes:      xmms-mp3 < 1.2.11-8
+
 
 %description    libs
 The X MultiMedia System player engine and core plugins.
@@ -86,15 +91,13 @@ Files needed for building plug-ins for the X MultiMedia System.
 
 
 %prep
-%setup -q -n %{name}-%{version}-20071117cvs
+%setup -q -n %{name}-%{version}-20071117cvs -a 3
 # Set default output plugin to ALSA
 %patch1 -p1 -b .audio
 # Use RTLD_LAZY, not RTLD_NOW
 %patch2 -p1 -b .lazy
 # Change the default skin
 %patch3 -p1 -b .default-skin
-# Don't build MP3 support, support bits for MP3 placeholder
-%patch4 -p1 -b .nomp3
 # Link arts dynamically and detect its presence for choosing output plugin
 %patch5 -p1 -b .arts
 # Don't link *everything* against alsa-lib
@@ -134,13 +137,8 @@ done
 make
 # smp_flags removed due to build issues
 
-%{__cc} $RPM_OPT_FLAGS -fPIC -shared -Wl,-soname -Wl,librh_mp3.so \
-    -o librh_mp3.so -I. $(gtk-config --cflags gtk) %{SOURCE3}
-
-
 %install
 make install DESTDIR=%{buildroot}
-install -pm 755 librh_mp3.so %{buildroot}%{_libdir}/xmms/Input
 install -dm 755 %{buildroot}%{_datadir}/xmms/Skins
 find %{buildroot} -name "*.la" | xargs rm -f
 
@@ -225,6 +223,9 @@ update-desktop-database &>/dev/null || :
 
 
 %changelog
+* Fri Nov 18 2016 Tom Callaway <spot@fedoraproject.org> - 1:1.2.11-27.20071117cvs
+- mp3 is back, baby!
+
 * Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.2.11-26.20071117cvs
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
