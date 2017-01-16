@@ -1,6 +1,6 @@
 Name:           xmms
 Version:        1.2.11
-Release:        27.20071117cvs%{?dist}
+Release:        28.20071117cvs%{?dist}
 Epoch:          1
 Summary:        The X MultiMedia System, a media player
 
@@ -74,7 +74,7 @@ Group:          System Environment/Libraries
 # mp3 is back
 Provides:       xmms-mp3 = %{version}-%{release}
 Obsoletes:      xmms-mp3 < 1.2.11-8
-
+Provides:	bundled(libmpg123)
 
 %description    libs
 The X MultiMedia System player engine and core plugins.
@@ -223,6 +223,10 @@ update-desktop-database &>/dev/null || :
 
 
 %changelog
+* Mon Jan 16 2017 Tom Callaway <spot@fedoraproject.org> - 1:1.2.11-28.20071117cvs
+- Add Provides for bundled libmpg123. xmms doesn't really have a good way to use
+  a system copy here, because it is older than dinosaurs.
+
 * Fri Nov 18 2016 Tom Callaway <spot@fedoraproject.org> - 1:1.2.11-27.20071117cvs
 - mp3 is back, baby!
 
