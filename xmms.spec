@@ -1,6 +1,6 @@
 Name:           xmms
 Version:        1.2.11
-Release:        28.20071117cvs%{?dist}
+Release:        29.20071117cvs%{?dist}
 Epoch:          1
 Summary:        The X MultiMedia System, a media player
 
@@ -223,6 +223,9 @@ update-desktop-database &>/dev/null || :
 
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.2.11-29.20071117cvs
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Mon Jan 16 2017 Tom Callaway <spot@fedoraproject.org> - 1:1.2.11-28.20071117cvs
 - Add Provides for bundled libmpg123. xmms doesn't really have a good way to use
   a system copy here, because it is older than dinosaurs.
